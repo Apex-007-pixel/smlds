@@ -1,0 +1,30 @@
+
+import pandas as pd
+
+from sklearn.model_selection import train_test_split
+from sklearn.tree import DecisionTreeClassifier
+from sklearn.metrics import accuracy_score
+
+# 1. Load Dataset
+data = pd.read_csv("/content/student-por.csv")
+
+# 2. Select Input and Output
+X = data[["studytime", "absences", "G1", "G2"]]
+
+y = (data["G3"] >= 10).astype(int)
+
+# 3. Split Data
+X_train, X_test, y_train, y_test = train_test_split(
+    X, y, test_size=0.2, random_state=42
+)
+
+# 4. Train Decision Tree Model
+model = DecisionTreeClassifier(random_state=42)
+model.fit(X_train, y_train)
+
+# 5. Predict
+pred = model.predict(X_test)
+
+# 6. Evaluate Model
+print("Accuracy:", accuracy_score(y_test, pred))
+print("Predictions:", pred)
