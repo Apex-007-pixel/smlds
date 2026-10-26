@@ -1,0 +1,71 @@
+import matplotlib.pyplot as plt
+import numpy as np
+import pandas as pd
+import seaborn as sns
+
+# 1. Load Dataset
+data = pd.read_csv("/content/student-por.csv")
+
+print("Dataset Head:")
+print(data.head())
+
+# 2. Statistical Analysis
+print("\n--- Descriptive Statistics ---")
+
+print("Mean (G1):", data["G1"].mean())
+print("Median (G1):", data["G1"].median())
+print("Mode (G1):", data["G1"].mode()[0])
+print("Variance (G1):", data["G1"].var())
+print("Std Deviation (G1):", data["G1"].std())
+print("Kurtosis (G1):", data["G1"].kurt())
+
+# 3. Visualizations
+
+# A. Histogram
+plt.figure(figsize=(6, 4))
+plt.hist(data["age"], bins=15, edgecolor="black")
+plt.xlabel("Age")
+plt.ylabel("Frequency")
+plt.title("Histogram of Age")
+plt.show()
+
+# B. Boxplot
+plt.figure(figsize=(6, 4))
+sns.boxplot(y=data["G1"])
+plt.title("Boxplot of Grade G1")
+plt.ylabel("Grade G1")
+plt.show()
+
+# C. Line Plot
+plt.figure(figsize=(8, 4))
+plt.plot(data["G1"].iloc[:50], marker="o")
+plt.xlabel("Student Index")
+plt.ylabel("Grade G1")
+plt.title("Line Plot of G1 (First 50 Students)")
+plt.show()
+
+# D. Scatter Plot
+plt.figure(figsize=(6, 4))
+plt.scatter(data["G1"], data["G2"], alpha=0.6)
+plt.xlabel("Grade G1")
+plt.ylabel("Grade G2")
+plt.title("Scatter Plot: G1 vs G2")
+plt.show()
+
+# E. Correlation Matrix Heatmap
+plt.figure(figsize=(6, 5))
+
+corr_matrix = data[["age", "Medu", "G1", "G2", "G3"]].corr()
+
+print("\n--- Correlation Matrix ---")
+print(corr_matrix)
+
+sns.heatmap(
+    corr_matrix,
+    annot=True,
+    cmap="coolwarm",
+    fmt=".2f"
+)
+
+plt.title("Correlation Heatmap")
+plt.show()
