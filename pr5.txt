@@ -1,0 +1,58 @@
+//ONE SAMPLE T TEST//
+
+
+import pandas as pd
+from scipy.stats import ttest_1samp
+
+# Load Dataset
+data = pd.read_csv("/content/Salary_Data.csv")
+
+# Select Salary column
+salary = data["Salary"]
+
+# Perform One-Sample t-Test
+t, p = ttest_1samp(salary, popmean=50000)
+
+print("T-statistic:", t)
+print("P-value:", p)
+
+# Hypothesis Decision
+if p < 0.05:
+    print("Reject Null Hypothesis")
+else:
+    print("Fail to Reject Null Hypothesis")
+
+
+
+
+
+//CHI-SQAURE TEST OF INDEPENDANCE//
+
+
+
+
+
+
+import pandas as pd
+from scipy.stats import chi2_contingency
+
+# Load Dataset
+data = pd.read_csv("/content/Salary_Data.csv")
+
+# Create Contingency Table
+table = pd.crosstab(data["Gender"], data["Job Title"])
+
+print("Contingency Table:")
+print(table)
+
+# Perform Chi-Square Test
+chi, p, dof, expected = chi2_contingency(table)
+
+print("Chi-square value:", chi)
+print("P-value:", p)
+
+# Hypothesis Decision
+if p < 0.05:
+    print("Reject Null Hypothesis")
+else:
+    print("Fail to Reject Null Hypothesis")
