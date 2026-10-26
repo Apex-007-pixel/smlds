@@ -1,0 +1,39 @@
+
+import pandas as pd
+
+from sklearn.model_selection import train_test_split
+from sklearn.linear_model import LogisticRegression
+from sklearn.metrics import accuracy_score
+
+# 1. Load Dataset and Remove Missing Values
+data = pd.read_csv("/content/Salary_Data.csv").dropna()
+
+# 2. Select Input and Output
+X = data[["Years of Experience"]]
+
+y = (data["Salary"] > data["Salary"].median()).astype(int)
+
+# 3. Split Data
+X_train, X_test, y_train, y_test = train_test_split(
+    X, y, test_size=0.2, random_state=42
+)
+
+# 4. Train Logistic Regression Model
+model = LogisticRegression()
+model.fit(X_train, y_train)
+
+# 5. Predict
+pred = model.predict(X_test)
+
+print("Predictions:", pred)
+print("Accuracy:", accuracy_score(y_test, pred))
+
+# 6. Predict for 5 Years of Experience
+new_data = pd.DataFrame({
+    "Years of Experience": [5]
+})
+
+print(
+    "Prediction for 5 years:",
+    model.predict(new_data)
+)
