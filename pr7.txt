@@ -1,0 +1,73 @@
+
+import pandas as pd
+
+from sklearn.model_selection import train_test_split, GridSearchCV
+from sklearn.linear_model import Ridge, Lasso, ElasticNet
+from sklearn.metrics import mean_squared_error
+
+# 1. Load Dataset
+data = pd.read_csv("/content/Salary_Data.csv")
+
+# 2. Remove Missing Values
+experience_col = "Years of Experience"
+
+cleaned_data = data.dropna(
+    subset=[experience_col, "Salary"]
+)
+
+# 3. Select Input and Output
+X = cleaned_data[[experience_col]]
+y = cleaned_data["Salary"]
+
+# 4. Split Data
+X_train, X_test, y_train, y_test = train_test_split(
+    X, y, test_size=0.2, random_state=42
+)
+
+# 5. Ridge Regression with Hyperparameter Tuning
+ridge = GridSearchCV(
+    Ridge(),
+    {"alpha": [0.1, 1, 10]},
+    cv=3
+)
+
+ridge.fit(X_train, y_train)
+
+print("Ridge Best Alpha:", ridge.best_params_)
+print(
+    "Ridge MSE:",
+    mean_squared_error(y_test, ridge.predict(X_test))
+)
+
+# 6. Lasso Regression with Hyperparameter Tuning
+lasso = GridSearchCV(
+    Lasso(max_iter=10000),
+    {"alpha": [0.1, 1, 10]},
+    cv=3
+)
+
+lasso.fit(X_train, y_train)
+
+print("Lasso Best Alpha:", lasso.best_params_)
+print(
+    "Lasso MSE:",
+    mean_squared_error(y_test, lasso.predict(X_test))
+)
+
+# 7. Elastic Net with Hyperparameter Tuning
+elastic = GridSearchCV(
+    ElasticNet(max_iter=10000),
+    {
+        "alpha": [0.1, 1, 10],
+        "l1_ratio": [0.2, 0.5, 0.8]
+    },
+    cv=3
+)
+
+elastic.fit(X_train, y_train)
+
+print("Elastic Net Best Parameters:", elastic.best_params_)
+print(
+    "Elastic Net MSE:",
+    mean_squared_error(y_test, elastic.predict(X_test))
+)
