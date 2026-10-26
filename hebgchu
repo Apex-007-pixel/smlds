@@ -1,0 +1,23 @@
+1\. Exploratory Data Analysis: Descriptive Statistics, Histograms, and Correlation Matrix.
+
+2\. Data Preprocessing: Missing Values, Encoding, Scaling, and Outlier Detection.
+
+3\. Sampling Methods: Simple Random Sampling (SRS), Stratified Sampling, and Cluster Sampling.
+
+4\. Demonstration of Central Limit Theorem Using Simulations.
+
+5\. Demonstration of t-Test and Chi-Square Test.
+
+6\. Demonstration of Linear Regression and Diagnostics (VIF, Residual Plots, Cook’s Distance) on Salary Dataset.
+
+7\. Demonstration of Ridge, Lasso, and Elastic Net with Hyperparameter Tuning.
+
+8\. Demonstration of Classification Models: Logistic Regression.
+
+9\. Demonstration of Classification Models: K-Nearest Neighbors (KNN).
+
+10\. Demonstration of Decision Trees with Student Performance Dataset.
+
+11\. Demonstration of PCA Clustering with Direct Values of Features.
+
+12\. Demonstration of K-Means with Direct Values Without Any Dataset.
