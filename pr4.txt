@@ -1,0 +1,25 @@
+
+import pandas as pd
+import numpy as np
+import matplotlib.pyplot as plt
+
+# 1. Load Dataset
+data = pd.read_csv("/content/Salary_Data.csv")
+
+print(data.head())
+
+# 2. Generate Sample Means
+means = []
+
+for i in range(1000):
+    sample = data.sample(n=20)
+    means.append(sample["Salary"].mean())
+
+# 3. Plot Histogram of Sample Means
+plt.hist(means, bins=30, edgecolor="black")
+
+plt.xlabel("Mean Salary")
+plt.ylabel("Frequency")
+plt.title("Central Limit Theorem")
+
+plt.show()
