@@ -1,0 +1,69 @@
+
+import pandas as pd
+import matplotlib.pyplot as plt
+import statsmodels.api as sm
+
+from statsmodels.stats.outliers_influence import variance_inflation_factor
+
+# 1. Load Dataset
+data = pd.read_csv("/content/Salary_Data.csv")
+
+# 2. Select Columns and Remove Missing Values
+data_clean = data[
+    ["Years of Experience", "Salary"]
+].dropna()
+
+X = data_clean[["Years of Experience"]]
+y = data_clean["Salary"]
+
+# 3. Linear Regression
+X = sm.add_constant(X)
+
+model = sm.OLS(y, X).fit()
+
+print(model.summary())
+
+# 4. Predict Salary
+pred = model.predict(X)
+
+# 5. Regression Plot
+plt.scatter(data_clean["Years of Experience"], y)
+plt.plot(
+    data_clean["Years of Experience"],
+    pred,
+    color="red"
+)
+
+plt.xlabel("Years of Experience")
+plt.ylabel("Salary")
+plt.title("Linear Regression")
+plt.show()
+
+# 6. Residual Plot
+residual = y - pred
+
+plt.scatter(pred, residual)
+plt.axhline(y=0, color="red")
+
+plt.xlabel("Predicted Salary")
+plt.ylabel("Residuals")
+plt.title("Residual Plot")
+plt.show()
+
+# 7. Variance Inflation Factor (VIF)
+print("VIF:")
+
+for i in range(1, X.shape[1]):
+    print(
+        variance_inflation_factor(X.values, i)
+    )
+
+# 8. Cook's Distance
+influence = model.get_influence()
+cooks = influence.cooks_distance[0]
+
+plt.stem(cooks)
+plt.xlabel("Data Points")
+plt.ylabel("Cook's Distance")
+plt.title("Cook's Distance")
+plt.show()
