@@ -1,0 +1,89 @@
+
+import matplotlib.pyplot as plt
+import numpy as np
+import pandas as pd
+
+from sklearn.model_selection import train_test_split
+
+# 1. Load Dataset
+data = pd.read_csv("/content/Salary_Data.csv")
+
+data = data.dropna(
+    subset=["Education Level", "Years of Experience", "Salary"]
+)
+
+print("Original Dataset Shape:", data.shape)
+
+# 2. Simple Random Sampling (SRS)
+# Each record has an equal chance of selection
+srs_sample = data.sample(n=20, random_state=42)
+
+print("\n--- 1. Simple Random Sampling (SRS) ---")
+print("Shape:", srs_sample.shape)
+print(srs_sample.head(3))
+
+# 3. Stratified Sampling
+# Select 20% of records from each Education Level group
+print("\n--- 2. Stratified Sampling ---")
+
+stratified_sample = data.groupby(
+    "Education Level", group_keys=False
+).apply(
+    lambda x: x.sample(frac=0.2, random_state=42)
+)
+
+print("Stratified Sample Shape:", stratified_sample.shape)
+
+print("Distribution in Sample:")
+print(stratified_sample["Education Level"].value_counts())
+
+# 4. Cluster Sampling
+# Randomly select 2 clusters and include all their records
+print("\n--- 3. Cluster Sampling ---")
+
+unique_clusters = data["Education Level"].unique()
+
+selected_clusters = np.random.choice(
+    unique_clusters, size=2, replace=False
+)
+
+cluster_sample = data[
+    data["Education Level"].isin(selected_clusters)
+]
+
+print("Selected Clusters:", selected_clusters)
+print("Cluster Sample Shape:", cluster_sample.shape)
+
+print("Included Clusters Distribution:")
+print(cluster_sample["Education Level"].value_counts())
+
+# 5. Data Partitioning (Train/Test Split)
+print("\n--- Train/Test Partitioning ---")
+
+X = data[["Years of Experience"]]
+y = data["Salary"]
+
+X_train, X_test, y_train, y_test = train_test_split(
+    X, y, test_size=0.3, random_state=42
+)
+
+print(f"Train Shape: {X_train.shape}, Test Shape: {X_test.shape}")
+
+# 6. Visualization: Train vs Test Data
+plt.figure(figsize=(7, 4))
+
+plt.scatter(
+    X_train["Years of Experience"], y_train,
+    color="blue", label="Train Data", alpha=0.6
+)
+
+plt.scatter(
+    X_test["Years of Experience"], y_test,
+    color="red", label="Test Data", alpha=0.6
+)
+
+plt.xlabel("Years of Experience")
+plt.ylabel("Salary")
+plt.title("Train vs Test Split")
+plt.legend()
+plt.show()
