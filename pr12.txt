@@ -1,0 +1,62 @@
+
+import numpy as np
+
+# 1. Dataset with Direct Values
+X = np.array([
+    [1, 1],
+    [2, 1],
+    [4, 3],
+    [5, 4]
+])
+
+K = 2
+
+# 2. Initialize Centroids
+centroids = np.array([
+    [4, 1],
+    [5, 4]
+])
+
+# 3. Apply K-Means Algorithm
+for iteration in range(10):
+
+    # Assign Points to Nearest Centroid
+    clusters = []
+
+    for point in X:
+        distances = []
+
+        for centroid in centroids:
+            distance = np.sqrt(
+                np.sum((point - centroid) ** 2)
+            )
+            distances.append(distance)
+
+        clusters.append(np.argmin(distances))
+
+    clusters = np.array(clusters)
+
+    # Update Centroids
+    new_centroids = []
+
+    for i in range(K):
+        points = X[clusters == i]
+        new_centroid = np.mean(points, axis=0)
+        new_centroids.append(new_centroid)
+
+    new_centroids = np.array(new_centroids)
+
+    # Check for Convergence
+    if np.array_equal(centroids, new_centroids):
+        break
+
+    centroids = new_centroids
+
+# 4. Display Cluster Assignments
+print("Cluster Assignment:")
+
+for i in range(len(X)):
+    print(X[i], "-> Cluster", clusters[i] + 1)
+
+print("\nFinal Centroids:")
+print(centroids)
