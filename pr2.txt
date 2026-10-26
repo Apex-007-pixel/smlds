@@ -1,0 +1,116 @@
+
+import numpy as np
+import pandas as pd
+import matplotlib.pyplot as plt
+import seaborn as sns
+
+from sklearn.preprocessing import (
+    LabelEncoder,
+    OneHotEncoder,
+    MinMaxScaler,
+    StandardScaler
+)
+
+# 1. Load Student Dataset
+df = pd.read_csv("/content/student-por.csv")
+
+print("Initial Shape:", df.shape)
+
+# 2. Duplicate Detection and Removal
+print("\n--- Duplicate Values ---")
+print("Duplicate rows count:", df.duplicated().sum())
+
+df = df.drop_duplicates()
+
+print("Shape after removing duplicates:", df.shape)
+
+# 3. Missing Value Detection and Removal
+print("\n--- Missing Values ---")
+print("Missing values per column:\n", df.isnull().sum())
+
+df = df.dropna()
+
+print("Shape after removing missing values:", df.shape)
+
+# 4. Outlier Detection using IQR Method
+print("\n--- Outlier Detection (IQR Method) ---")
+
+Q1 = df["absences"].quantile(0.25)
+Q3 = df["absences"].quantile(0.75)
+
+IQR = Q3 - Q1
+
+lower_bound = Q1 - 1.5 * IQR
+upper_bound = Q3 + 1.5 * IQR
+
+outliers = df[
+    (df["absences"] < lower_bound) |
+    (df["absences"] > upper_bound)
+]
+
+print("Number of outliers in absences:", len(outliers))
+
+plt.figure(figsize=(6, 3))
+sns.boxplot(x=df["absences"])
+plt.title("Boxplot for Absences (Outlier Detection)")
+plt.show()
+
+# Optional: Outlier Detection using Z-score
+from scipy.stats import zscore
+
+z_scores = np.abs(zscore(df["absences"]))
+outliers_z = df[z_scores > 3]
+
+print("Outliers detected via Z-score (> 3):", len(outliers_z))
+
+# 5. Two Types of Encoders
+print("\n--- Encoders ---")
+
+# Encoder 1: LabelEncoder
+le = LabelEncoder()
+
+df_encoded = df.copy()
+df_encoded["school_LabelEnc"] = le.fit_transform(df["school"])
+
+print("Label Encoded 'school':")
+print(df_encoded[["school", "school_LabelEnc"]].head())
+
+# Encoder 2: OneHotEncoder
+ohe = OneHotEncoder(sparse_output=False, drop="first")
+
+encoded_mjob = ohe.fit_transform(df[["Mjob"]])
+
+mjob_df = pd.DataFrame(
+    encoded_mjob,
+    columns=ohe.get_feature_names_out(["Mjob"])
+)
+
+print("\nOneHot Encoded 'Mjob' (first 3 rows):")
+print(mjob_df.head(3))
+
+# 6. Two Types of Scalers
+print("\n--- Scalers ---")
+
+numeric_cols = ["age", "G1", "G2", "G3"]
+
+# Scaler 1: MinMaxScaler
+minmax = MinMaxScaler()
+
+df_minmax = pd.DataFrame(
+    minmax.fit_transform(df[numeric_cols]),
+    columns=numeric_cols
+)
+
+print("MinMax Scaled Features:")
+print(df_minmax.head(3))
+
+# Scaler 2: StandardScaler
+std_scaler = StandardScaler()
+
+df_standard = pd.DataFrame(
+    std_scaler.fit_transform(df[numeric_cols]),
+    columns=numeric_cols
+)
+
+print("\nStandard Scaled Features:")
+print(df_standard.head(3))
